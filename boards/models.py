@@ -1,6 +1,8 @@
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.html import mark_safe
+from markdown import markdown
 
 from django.utils.text import Truncator
 
@@ -36,6 +38,9 @@ class Post(models.Model):
     updated_at = models.DateTimeField(null=True)
     created_by = models.ForeignKey(User, related_name='posts', on_delete=models.DO_NOTHING)
     updated_by = models.ForeignKey(User, null=True, related_name='+', on_delete=models.DO_NOTHING)
+
+    def get_message_as_markdown(self):
+        return mark_safe(markdown(self.message, safe_mode='escape'))
 
     def __str__(self):
         truncated_message = Truncator(self.message)
